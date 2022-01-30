@@ -8,18 +8,15 @@ import {
   Zoom,
 } from '@mui/material';
 import type { NextPage } from 'next';
+import { Header } from '../components/Header';
 import { exampleActions, useAppDispatch, useAppSelector } from '../redux';
-
-const primary = '#1976d2';
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
   const exampleState = useAppSelector((state) => state.example);
   return (
     <div css={styles.root}>
-      <Paper elevation={3} css={styles.navBar}>
-        <Typography>{'EcoPortal'}</Typography>
-      </Paper>
+      <Header />
 
       <div css={styles.body}>
         <Typography variant={'h1'} css={styles.heading}>
@@ -78,18 +75,6 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-  }),
-  navBar: css({
-    background: primary,
-    height: 50,
-    alignSelf: 'stretch',
-    display: 'flex',
-    alignItems: 'center',
-    padding: 16,
-    borderRadius: 0,
-    p: {
-      color: 'white',
-    },
   }),
   body: css({
     alignSelf: 'stretch',

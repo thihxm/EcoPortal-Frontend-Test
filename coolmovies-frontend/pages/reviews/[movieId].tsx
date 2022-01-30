@@ -1,12 +1,14 @@
 import { css } from "@emotion/react";
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Dialog, DialogTitle, Fab, Slider, TextField, Typography } from "@mui/material";
+import { Add as AddIcon } from "@mui/icons-material";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Header } from "../../components/Header";
 import { Review } from "../../components/Review";
-import { reviewsActions, useAppDispatch, useAppSelector } from "../../redux";
+import { reviewsActions, useAppDispatch, useAppSelector, userActions } from "../../redux";
+import { AddReviewDialog } from "../../components/AddReviewDialog";
 
 type ReviewResponse = {
   id: string;
@@ -23,11 +25,25 @@ export const Movie: NextPage = () => {
 
   const dispatch = useAppDispatch();
   const reviewsState = useAppSelector((state) => state.reviews);
+  const userState = useAppSelector((state) => state.user);
+
+  const [addReviewDialog, setAddReviewDialog] = useState(false);
+  const [userId, setUserId] = useState("");
+  const [movieId, setMovieId] = useState("");
+
+  const handleCloseAddReviewDialog = () => {
+    setAddReviewDialog(false)
+  }
+
+  const handleOpenAddReviewDialog = () => {
+    setAddReviewDialog(true)
+  }
   
   useEffect(() => {
     if (!router.isReady) return;
 
     const movieId = router.asPath.split('/').at(-1) as string;
+    setMovieId(movieId)
 
     dispatch(
       reviewsState.fetchMovieData
@@ -39,7 +55,22 @@ export const Movie: NextPage = () => {
         ? reviewsActions.clearReviewsData()
         : reviewsActions.fetchReviewsByMovie(movieId)
     );
-  }, [router.isReady, router.asPath]);
+    if (!userState.fetchUserData) {
+      dispatch(userActions.fetchCurrentUser());
+    }
+  }, [dispatch, router.isReady, router.asPath]);
+
+  useEffect(() => {
+    if (userState.fetchUserData && !Array.isArray(userState.fetchUserData)) {
+      setUserId(userState.fetchUserData.currentUser.id)
+    }
+  }, [userState.fetchUserData]);
+
+  useEffect(() => {
+    if (userState.newReviewData && !Array.isArray(userState.newReviewData)) {
+      dispatch(reviewsActions.fetchReviewsByMovie(movieId))
+    }
+  }, [dispatch, movieId, userState.newReviewData]);
 
   return (
     <>
@@ -62,6 +93,17 @@ export const Movie: NextPage = () => {
             />
           ))}
         </Box>
+
+        <AddReviewDialog
+          onClose={handleCloseAddReviewDialog}
+          isOpen={addReviewDialog}
+          userId={userId}
+          movieId={movieId}
+        />
+
+        <Fab onClick={handleOpenAddReviewDialog} color="primary" aria-label="add review" css={styles.addReview}>
+          <AddIcon />
+        </Fab>
       </Container>
     </>
   );
@@ -77,6 +119,10 @@ const styles = {
     font-size: 3rem;
     font-weight: 500;
     margin-bottom: 1rem;
+  `,
+  addReview: css`
+    position: fixed;
+    inset: auto 2rem 2rem auto;
   `,
 }
 

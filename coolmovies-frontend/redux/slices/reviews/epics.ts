@@ -63,6 +63,25 @@ export const createReviewAsyncEpic: Epic = (
     })
   );
 
+export const updateReviewAsyncEpic: Epic = (
+  action$: Observable<SliceAction['updateReview']>,
+  state$: StateObservable<RootState>,
+  { client }: EpicDependencies
+) =>
+  action$.pipe(
+    filter(actions.updateReview.match),
+    switchMap(async (action) => {
+      try {
+        const result = await client.mutate({
+          mutation: updateReviewById(action.payload),
+        });
+        return actions.updatedReview({ data: result.data });
+      } catch (err) {
+        return actions.updateReviewError();
+      }
+    })
+  );
+
 type createReviewDTO = {
   title: string;
   body: string;
@@ -89,6 +108,41 @@ const createReview = ({
           userReviewerId: "${userReviewerId}"
         }})
       {
+        movieReview {
+          id
+          title
+          body
+          rating
+          movieByMovieId {
+            title
+          }
+          userByUserReviewerId {
+            name
+          }
+        }
+      }
+    }
+  `;
+}
+
+type UpdateReviewDTO = {
+  reviewId: string;
+  title?: string;
+  body?: string;
+  rating?: number;
+}
+
+const updateReviewById = ({ reviewId, title, body, rating }: UpdateReviewDTO) => {
+  return gql`
+    mutation {
+      updateMovieReviewById(input: {
+        id: "${reviewId}",
+        movieReviewPatch: {
+          ${title && `title: "${title}",`}
+          ${body && `body: "${body}",`}
+          ${rating && `rating: ${rating},`}
+        }
+      }) {
         movieReview {
           id
           title

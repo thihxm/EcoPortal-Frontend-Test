@@ -42,21 +42,34 @@ type CreateReviewDTO = {
   userReviewerId: string;
 }
 
-type NewReviewData = {
-  createMovieReview: {
-    movieReview: {
-      id: string;
+type MovieReview = {
+  movieReview: {
+    id: string;
+    title: string;
+    body: string;
+    rating: number;
+    movieByMovieId: {
       title: string;
-      body: string;
-      rating: number;
-      movieByMovieId: {
-        title: string;
-      };
-      userByUserReviewerId: {
-        name: string;
-      };
-    }
+    };
+    userByUserReviewerId: {
+      name: string;
+    };
   }
+}
+
+type NewReviewData = {
+  createMovieReview: MovieReview
+}
+
+type UpdateReviewDTO = {
+  reviewId: string;
+  title?: string;
+  body?: string;
+  rating?: number;
+}
+
+type UpdatedReviewData = {
+  updateMovieReviewById: MovieReview
 }
 
 interface ReviewsState {
@@ -64,6 +77,7 @@ interface ReviewsState {
   fetchMovieData?: MovieData | string[];
   fetchReviewsData?: ReviewsData | string[];
   newReviewData?: NewReviewData | string[];
+  updatedReviewData?: UpdatedReviewData | string[];
   loading: boolean;
 }
 
@@ -72,6 +86,7 @@ const initialState: ReviewsState = {
   fetchMovieData: undefined,
   fetchReviewsData: undefined,
   newReviewData: undefined,
+  updatedReviewData: undefined,
   loading: false,
 };
 
@@ -128,6 +143,17 @@ export const slice = createSlice({
     clearCreateReview: (state) => {
       state.newReviewData = undefined;
       state.loading = false;
+    },
+
+    updateReview: (state, action: PayloadAction<UpdateReviewDTO>) => {},
+    updatedReview: (state, action: PayloadAction<{ data: UpdatedReviewData }>) => {
+      state.updatedReviewData = action.payload.data;
+    },
+    updateReviewError: (state) => {
+      state.updatedReviewData = ['Error Updating Review :('];
+    },
+    clearUpdateReview: (state) => {
+      state.updatedReviewData = undefined;
     },
   },
 });

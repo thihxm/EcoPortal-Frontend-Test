@@ -1,7 +1,8 @@
 import React from 'react';
+import { useEffect } from "react";
 import { css } from "@emotion/react";
 import { NextPage } from "next";
-import { useEffect } from "react";
+import Link from 'next/link';
 
 import { Header } from "../../components/Header";
 import { MovieCard } from "../../components/MovieCard";
@@ -36,14 +37,15 @@ const Reviews: NextPage = () => {
       <Header />
       <div css={styles.moviesListContainer}>
         {moviesState.fetchData?.allMovies.nodes.map((movie: MovieResponse) => (
-          <MovieCard
-            key={movie.id}
-            id={movie.id}
-            title={movie.title}
-            director={movie.movieDirectorByMovieDirectorId.name}
-            releaseDate={movie.releaseDate}
-            userCreator={movie.userByUserCreatorId.name}
-          />
+          <Link key={movie.id} href={`/reviews/${movie.id}`} passHref>
+            <MovieCard
+              id={movie.id}
+              title={movie.title}
+              director={movie.movieDirectorByMovieDirectorId.name}
+              releaseDate={movie.releaseDate}
+              userCreator={movie.userByUserCreatorId.name}
+            />
+          </Link>
         ))}
       </div>
     </>

@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
+import { forwardRef, ForwardRefRenderFunction } from 'react';
 
 interface MovieCardProps {
   id: string;
@@ -7,17 +8,19 @@ interface MovieCardProps {
   director: string;
   releaseDate: string;
   userCreator: string;
+  href?: string;
 }
 
-export function MovieCard({
+const MovieCardBase: ForwardRefRenderFunction<HTMLAnchorElement, MovieCardProps> = ({
   title,
   director,
   releaseDate,
   userCreator,
-}: MovieCardProps) {
+  href,
+}, ref) => {
   return (
     <Card css={styles.cardContainer}>
-      <CardActionArea css={styles.cardButton}>
+      <CardActionArea href={String(href)} ref={ref} css={styles.cardButton}>
         <CardContent css={styles.cardContent}>
           <Typography variant="h2" css={styles.movieTitle}>
             {title}
@@ -74,41 +77,4 @@ const styles = {
   `,
 }
 
-/* 
-{
-	"data": {
-		"allMovies": {
-			"nodes": [
-				{
-					"id": "70351289-8756-4101-bf9a-37fc8c7a82cd",
-					"title": "Rogue One: A Star Wars Story",
-					"movieDirectorByMovieDirectorId": {
-						"age": 46,
-						"id": "c103cc08-ed39-4a3c-a1f3-0f431c07539e",
-						"name": "Gareth Edwards"
-					},
-					"userByUserCreatorId": {
-						"id": "7b4c31df-04b3-452f-a9ee-e9f8836013cc",
-						"name": "Marle"
-					},
-					"releaseDate": "2016-12-16"
-				},
-				{
-					"id": "b8d93229-e02a-4060-9370-3e073ada86c3",
-					"title": "Star Wars: A New Hope",
-					"movieDirectorByMovieDirectorId": {
-						"age": 100,
-						"id": "7467db60-d506-4f1a-b5b4-7f2620d61669",
-						"name": "George Lucas"
-					},
-					"userByUserCreatorId": {
-						"id": "5f1e6707-7c3a-4acd-b11f-fd96096abd5a",
-						"name": "Chrono"
-					},
-					"releaseDate": "1977-05-25"
-				}
-			]
-		}
-	}
-}
-*/
+export const MovieCard = forwardRef(MovieCardBase)

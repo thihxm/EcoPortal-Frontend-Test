@@ -1,33 +1,81 @@
 import { css } from "@emotion/react";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, IconButton, Menu, MenuItem, Paper, Typography } from "@mui/material";
+import { MoreVert as MoreVertIcon, Edit as EditIcon } from "@mui/icons-material";
+import React, { useState } from "react";
+import { useAppDispatch, useAppSelector } from "../redux";
 
 interface ReviewProps {
+  id: string;
   title: string;
   author: string;
   rating: number;
   body: string;
 }
 
-export function Review({ title, author, rating, body }: ReviewProps) {
+export function Review({ id, title, author, rating, body }: ReviewProps) {
+  const dispatch = useAppDispatch();
+  const reviewsState = useAppSelector((state) => state.reviews);
+
+  const [menuElement, setMenuElement] = useState<Element | null>(null);
+  const open = Boolean(menuElement);
+
+  const handleClick = (event) => {
+    setMenuElement(event.currentTarget);
+  }
+
+  const handleClose = () => {
+    setMenuElement(null);
+  }
+
+  const handleEditReview = () => {
+    console.log(id);
+  }
+
   return (
-    <Paper elevation={1} css={styles.reviewContainer}>
-      <Box css={styles.reviewHeader}>
-        <Box css={styles.reviewDetails}>
-          <Typography variant="h2" css={styles.reviewTitle}>
-              {title}
+    <>
+      <Paper elevation={1} css={styles.reviewContainer}>
+        <Box css={styles.reviewHeader}>
+          <Box css={styles.reviewDetails}>
+            <Typography variant="h2" css={styles.reviewTitle}>
+                {title}
+            </Typography>
+            <Typography color="text.secondary" css={styles.reviewAuthor}>
+                {author}
+            </Typography>
+          </Box>
+          <Typography css={styles.reviewRating}>
+              <span>{rating}</span>/5
           </Typography>
-          <Typography color="text.secondary" css={styles.reviewAuthor}>
-              {author}
-          </Typography>
+          <IconButton
+            onClick={handleClick}
+            size="small"
+            aria-controls={open ? 'options-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            css={styles.optionsButton}
+          >
+            <MoreVertIcon />
+          </IconButton>
         </Box>
-        <Typography css={styles.reviewRating}>
-            <span>{rating}</span>/5
+        <Typography>
+          {body}
         </Typography>
-      </Box>
-      <Typography>
-        {body}
-      </Typography>
-    </Paper>
+      </Paper>
+      <Menu
+        anchorEl={menuElement}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={handleEditReview}>
+          <EditIcon fontSize="small" css={styles.editIcon} />
+          Edit
+        </MenuItem>
+      </Menu>
+    </>
   );
 }
 
@@ -58,5 +106,12 @@ const styles = {
       font-weight: 500;
       font-size: 1.7rem;
     }
+  `,
+  optionsButton: css`
+    height: 2rem;
+    aspect-ratio: 1 / 1;
+  `,
+  editIcon: css`
+    margin-right: 0.5rem;
   `,
 }

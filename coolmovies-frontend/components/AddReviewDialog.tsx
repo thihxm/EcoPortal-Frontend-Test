@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { Box, Button, Dialog, DialogTitle, IconButton, Slider, TextField, Typography } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { FormEvent, useEffect } from "react";
-import { useAppDispatch, useAppSelector, userActions } from "../redux";
+import { useAppDispatch, useAppSelector, reviewsActions } from "../redux";
 
 interface AddReviewDialogProps {
   onClose: () => void
@@ -18,7 +18,6 @@ export function AddReviewDialog({
   movieId
 }: AddReviewDialogProps) {
   const dispatch = useAppDispatch();
-  const userState = useAppSelector((state) => state.user);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -36,12 +35,12 @@ export function AddReviewDialog({
       userReviewerId: userId,
     }
 
-    dispatch(userActions.createReview(data))
+    dispatch(reviewsActions.createReview(data))
     onClose()
   }
 
   useEffect(() => {
-    dispatch(userActions.clearCreateReview())
+    dispatch(reviewsActions.clearCreateReview())
   }, [dispatch])
 
   return (

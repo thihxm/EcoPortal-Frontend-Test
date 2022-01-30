@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Box, Container, Dialog, DialogTitle, Fab, Slider, TextField, Typography } from "@mui/material";
+import { Box, CircularProgress, Container, Dialog, DialogTitle, Fab, Slider, TextField, Typography } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -67,10 +67,10 @@ export const Movie: NextPage = () => {
   }, [userState.fetchUserData]);
 
   useEffect(() => {
-    if (userState.newReviewData && !Array.isArray(userState.newReviewData)) {
+    if (!reviewsState.loading && reviewsState.newReviewData && !Array.isArray(reviewsState.newReviewData)) {
       dispatch(reviewsActions.fetchReviewsByMovie(movieId))
     }
-  }, [dispatch, movieId, userState.newReviewData]);
+  }, [dispatch, movieId, reviewsState.newReviewData, reviewsState.loading]);
 
   return (
     <>
@@ -82,16 +82,22 @@ export const Movie: NextPage = () => {
               && reviewsState.fetchMovieData?.movieById.title}
           </Typography>
 
-          {!Array.isArray(reviewsState.fetchReviewsData)
-            && reviewsState.fetchReviewsData?.allMovieReviews.nodes.map((review: ReviewResponse) => (
-            <Review
-              key={review.id}
-              title={review.title}
-              author={review.userByUserReviewerId.name}
-              rating={review.rating}
-              body={review.body}
-            />
-          ))}
+          {reviewsState.loading
+            ? (
+              <CircularProgress />
+            )
+            : !Array.isArray(reviewsState.fetchReviewsData)
+                && reviewsState.fetchReviewsData?.allMovieReviews.nodes.map((review: ReviewResponse) => (
+                <Review
+                  key={review.id}
+                  id={review.id}
+                  title={review.title}
+                  author={review.userByUserReviewerId.name}
+                  rating={review.rating}
+                  body={review.body}
+                />
+              ))}
+          
         </Box>
 
         <AddReviewDialog

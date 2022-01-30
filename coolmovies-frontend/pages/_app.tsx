@@ -10,13 +10,15 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
 } from '@apollo/client';
+import { theme } from '../styles/theme';
+import { ThemeProvider } from '@mui/material';
 
 const App: FC<AppProps> = ({ Component, pageProps }) => {
   const [store, setStore] = useState<EnhancedStore | null>(null);
   React.useEffect(() => {
     const client = new ApolloClient({
       cache: new InMemoryCache(),
-      uri: '/graphql',
+      uri: 'http://localhost:5001/graphql',
     });
 
     const store = createStore({ epicDependencies: { client } });
@@ -32,7 +34,9 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
       </Head>
       <ReduxProvider store={store}>
-        <Component {...pageProps} />
+        <ThemeProvider theme={theme}>
+          <Component {...pageProps} />
+        </ThemeProvider>
       </ReduxProvider>
     </>
   );

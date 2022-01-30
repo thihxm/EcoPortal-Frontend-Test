@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 import { Box, Container, Typography } from "@mui/material";
-import useEnhancedEffect from "@mui/material/utils/useEnhancedEffect";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";

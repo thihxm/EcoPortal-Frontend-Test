@@ -48,10 +48,12 @@ export const Movie: NextPage = () => {
       <Container maxWidth="lg">
         <Box css={styles.reviewsContainer}>
           <Typography variant="h1" css={styles.movieTitle}>
-            {reviewsState.fetchMovieData?.movieById.title}
+            {!Array.isArray(reviewsState.fetchMovieData)
+              && reviewsState.fetchMovieData?.movieById.title}
           </Typography>
 
-          {reviewsState.fetchReviewsData?.allMovieReviews.nodes.map((review: ReviewResponse) => (
+          {!Array.isArray(reviewsState.fetchReviewsData)
+            && reviewsState.fetchReviewsData?.allMovieReviews.nodes.map((review: ReviewResponse) => (
             <Review
               key={review.id}
               title={review.title}

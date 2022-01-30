@@ -1,9 +1,43 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+type MovieData = {
+  movieById: {
+    id: string;
+    title: string;
+    movieDirectorByMovieDirectorId: {
+      name: string;
+    };
+    userByUserCreatorId: {
+      name: string;
+    };
+    releaseDate: string;
+  };
+}
+
+type Review = {
+  id: string;
+  title: string;
+  body: string;
+  rating: number;
+  movieByMovieId: {
+    title: string;
+  };
+  userByUserReviewerId: {
+    id: string;
+    name: string;
+  };
+}
+
+type ReviewsData = {
+  allMovieReviews: {
+    nodes: Review[];
+  };
+}
+
 interface ReviewsState {
   movieId: string;
-  fetchMovieData?: unknown[];
-  fetchReviewsData?: unknown[];
+  fetchMovieData?: MovieData | string[];
+  fetchReviewsData?: ReviewsData | string[];
 }
 
 const initialState: ReviewsState = {
@@ -30,13 +64,13 @@ export const slice = createSlice({
       state.movieId = '';
       state.fetchMovieData = undefined;
     },
-    loadedMovie: (state, action: PayloadAction<{ data: unknown[] }>) => {
+    loadedMovie: (state, action: PayloadAction<{ data: MovieData }>) => {
       state.fetchMovieData = action.payload.data;
     },
     loadMovieError: (state) => {
       state.fetchMovieData = ['Error Fetching Movie :('];
     },
-    loadedReviews: (state, action: PayloadAction<{ data: unknown[] }>) => {
+    loadedReviews: (state, action: PayloadAction<{ data: ReviewsData }>) => {
       state.fetchReviewsData = action.payload.data;
     },
     loadReviewsError: (state) => {

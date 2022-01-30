@@ -1,7 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+type MovieData = {
+  id: string;
+  title: string;
+  movieDirectorByMovieDirectorId: {
+    name: string;
+  };
+  userByUserCreatorId: {
+    name: string;
+  },
+  releaseDate: string;
+}
+
+type MoviesData = {
+  allMovies: {
+    nodes: MovieData[];
+  };
+}
+
 interface MoviesState {
-  fetchData?: unknown[];
+  fetchData?: MoviesData | string[];
 }
 
 const initialState: MoviesState = {
@@ -16,7 +34,7 @@ export const slice = createSlice({
     clearData: (state) => {
       state.fetchData = undefined;
     },
-    loaded: (state, action: PayloadAction<{ data: unknown[] }>) => {
+    loaded: (state, action: PayloadAction<{ data: MoviesData }>) => {
       state.fetchData = action.payload.data;
     },
     loadError: (state) => {

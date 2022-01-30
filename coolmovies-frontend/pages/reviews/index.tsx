@@ -38,7 +38,8 @@ const Reviews: NextPage = () => {
       <Header />
       <Container maxWidth="lg">
         <div css={styles.moviesListContainer}>
-          {moviesState.fetchData?.allMovies.nodes.map((movie: MovieResponse) => (
+          {!Array.isArray(moviesState.fetchData)
+            && moviesState.fetchData?.allMovies.nodes.map((movie: MovieResponse) => (
             <Link key={movie.id} href={`/reviews/${movie.id}`} passHref>
               <MovieCard
                 id={movie.id}

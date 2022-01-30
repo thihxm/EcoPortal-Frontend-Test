@@ -1,12 +1,13 @@
 import { css } from '@emotion/react'
 import { Paper, Typography } from "@mui/material";
 import Link from 'next/link';
-
-const primary = '#1976d2';
+import { useTheme } from '@mui/material';
 
 export function Header() {
+  const theme = useTheme();
+
   return (
-    <Paper elevation={3} css={styles.navBar}>
+    <Paper elevation={3} css={styles.navBar(theme.palette.primary.main)}>
       <Link href="/" passHref>
         <Typography component="a" css={styles.logo}>{'EcoPortal'}</Typography>
       </Link>
@@ -22,8 +23,8 @@ export function Header() {
 }
 
 const styles = {
-  navBar: css({
-    background: primary,
+  navBar: (color: string) => css({
+    background: color,
     height: 50,
     alignSelf: 'stretch',
     display: 'flex',

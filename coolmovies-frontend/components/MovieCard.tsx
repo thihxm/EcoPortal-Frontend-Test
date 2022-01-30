@@ -45,7 +45,7 @@ const styles = {
   cardContainer: css`
     width: 100%;
 
-    @media (min-width: 576px) {
+    @media (min-width: 768px) {
       max-width: 345px;
     }
   `,

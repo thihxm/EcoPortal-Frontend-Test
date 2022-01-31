@@ -1,8 +1,9 @@
 import { css } from "@emotion/react";
-import { Box, IconButton, Menu, MenuItem, Paper, Typography } from "@mui/material";
-import { MoreVert as MoreVertIcon, Edit as EditIcon } from "@mui/icons-material";
+import { Box, IconButton, Menu, MenuItem, Paper, Typography, SvgIcon } from "@mui/material";
+import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import React, { MouseEvent, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../services/redux";
+import { useAppDispatch } from "../services/redux";
+import EditIcon from '../../public/edit.svg'
 
 interface ReviewCardProps {
   id: string;
@@ -80,7 +81,7 @@ export function ReviewCard({
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem onClick={handleEditReview}>
-          <EditIcon fontSize="small" css={styles.editIcon} />
+          <SvgIcon component={EditIcon} viewBox="0 0 16 16" css={styles.editIcon} />
           Edit
         </MenuItem>
       </Menu>
@@ -122,5 +123,7 @@ const styles = {
   `,
   editIcon: css`
     margin-right: 0.5rem;
+    height: 1.2rem;
+    width: 1.2rem;
   `,
 }

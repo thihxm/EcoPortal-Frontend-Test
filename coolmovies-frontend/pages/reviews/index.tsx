@@ -26,12 +26,8 @@ const Reviews: NextPage = () => {
   const moviesState = useAppSelector((state) => state.movies);
 
   useEffect(() => {
-    dispatch(
-      moviesState.fetchData
-        ? moviesActions.clearData()
-        : moviesActions.fetch()
-    );
-  }, []);
+    dispatch(moviesActions.fetch());
+  }, [dispatch]);
   
   return (
     <>

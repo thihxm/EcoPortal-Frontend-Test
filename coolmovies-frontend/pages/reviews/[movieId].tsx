@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Box, CircularProgress, Container, Dialog, DialogTitle, Fab, Slider, TextField, Typography } from "@mui/material";
+import { Box, CircularProgress, Container, Fab, Typography } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -84,20 +84,12 @@ export const Movie: NextPage = () => {
     const movieId = router.asPath.split('/').at(-1) as string;
     setMovieId(movieId)
 
-    dispatch(
-      reviewsState.fetchMovieData
-        ? reviewsActions.clearMovieData()
-        : reviewsActions.fetchReviewsByMovie(movieId)
-    );
-    dispatch(
-      reviewsState.fetchReviewsData
-        ? reviewsActions.clearReviewsData()
-        : reviewsActions.fetchReviewsByMovie(movieId)
-    );
+    dispatch(reviewsActions.fetchReviewsByMovie(movieId));
+    dispatch(reviewsActions.fetchReviewsByMovie(movieId));
     if (!userState.fetchUserData) {
       dispatch(userActions.fetchCurrentUser());
     }
-  }, [dispatch, router.isReady, router.asPath]);
+  }, [dispatch, router.isReady, router.asPath, userState.fetchUserData]);
 
   useEffect(() => {
     if (userState.fetchUserData && !Array.isArray(userState.fetchUserData)) {

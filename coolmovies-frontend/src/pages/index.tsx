@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import type { NextPage } from 'next';
 import { Header } from '../components/Header';
-import { exampleActions, useAppDispatch, useAppSelector } from '../redux';
+import { exampleActions, useAppDispatch, useAppSelector } from '../services/redux';
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();

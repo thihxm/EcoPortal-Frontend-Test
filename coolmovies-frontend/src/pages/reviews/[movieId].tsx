@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 
 import { Header } from "../../components/Header";
 import { ReviewCard } from "../../components/ReviewCard";
-import { reviewsActions, useAppDispatch, useAppSelector, userActions } from "../../redux";
+import { reviewsActions, useAppDispatch, useAppSelector, userActions } from "../../services/redux";
 import { ReviewDialog } from "../../components/ReviewDialog";
 
 type ReviewResponse = {

@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { Box, IconButton, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import { MoreVert as MoreVertIcon, Edit as EditIcon } from "@mui/icons-material";
 import React, { MouseEvent, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../redux";
+import { useAppDispatch, useAppSelector } from "../services/redux";
 
 interface ReviewCardProps {
   id: string;

@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 import { Header } from "../../components/Header";
 import { MovieCard } from "../../components/MovieCard";
-import { moviesActions, useAppDispatch, useAppSelector } from "../../redux";
+import { moviesActions, useAppDispatch, useAppSelector } from "../../services/redux";
 import { Container } from '@mui/material';
 
 type MovieResponse = {

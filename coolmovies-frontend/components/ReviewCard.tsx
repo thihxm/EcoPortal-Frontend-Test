@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { Box, IconButton, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import { MoreVert as MoreVertIcon, Edit as EditIcon } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { MouseEvent, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux";
 
 interface ReviewCardProps {
@@ -27,7 +27,7 @@ export function ReviewCard({
   const [menuElement, setMenuElement] = useState<Element | null>(null);
   const open = Boolean(menuElement);
 
-  const handleClick = (event) => {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setMenuElement(event.currentTarget);
   }
 

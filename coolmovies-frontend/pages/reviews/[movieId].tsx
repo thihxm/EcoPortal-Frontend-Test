@@ -101,15 +101,18 @@ export const Movie: NextPage = () => {
 
   useEffect(() => {
     if (userState.fetchUserData && !Array.isArray(userState.fetchUserData)) {
-      setUserId(userState.fetchUserData.currentUser.id)
+      setUserId(userState.fetchUserData.currentUser.id);
     }
   }, [userState.fetchUserData]);
 
   useEffect(() => {
-    if (!reviewsState.loading && reviewsState.newReviewData && !Array.isArray(reviewsState.newReviewData)) {
-      dispatch(reviewsActions.fetchReviewsByMovie(movieId))
+    const hasNewData = reviewsState.newReviewData && !Array.isArray(reviewsState.newReviewData);
+    const hasUpdatedData = reviewsState.updatedReviewData && !Array.isArray(reviewsState.updatedReviewData);
+
+    if (!reviewsState.loadingMutation && (hasNewData || hasUpdatedData)) {
+      dispatch(reviewsActions.fetchReviewsByMovie(movieId));
     }
-  }, [dispatch, movieId, reviewsState.newReviewData, reviewsState.loading]);
+  }, [dispatch, movieId, reviewsState.newReviewData, reviewsState.loadingMutation, reviewsState.updatedReviewData]);
 
   return (
     <>
@@ -121,7 +124,7 @@ export const Movie: NextPage = () => {
               && reviewsState.fetchMovieData?.movieById.title}
           </Typography>
 
-          {reviewsState.loading
+          {reviewsState.loadingMovieData
             ? (
               <CircularProgress />
             )

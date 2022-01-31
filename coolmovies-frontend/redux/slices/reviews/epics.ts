@@ -36,6 +36,7 @@ export const reviewsAsyncEpic: Epic = (
       try {
         const result = await client.query({
           query: allReviewsByMovie(state$.value.reviews.movieId),
+          fetchPolicy: 'network-only',
         });
         return actions.loadedReviews({ data: result.data });
       } catch (err) {
@@ -114,10 +115,12 @@ const createReview = ({
           body
           rating
           movieByMovieId {
+            id
             title
           }
           userByUserReviewerId {
             name
+            id
           }
         }
       }
@@ -149,10 +152,12 @@ const updateReviewById = ({ reviewId, title, body, rating }: UpdateReviewDTO) =>
           body
           rating
           movieByMovieId {
+            id
             title
           }
           userByUserReviewerId {
             name
+            id
           }
         }
       }
@@ -190,6 +195,7 @@ const allReviewsByMovie = (movieId: string) => {
           body
           rating
           movieByMovieId {
+            id
             title
           }
           userByUserReviewerId {

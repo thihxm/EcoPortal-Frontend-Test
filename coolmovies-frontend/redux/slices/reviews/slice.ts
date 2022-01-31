@@ -78,7 +78,8 @@ interface ReviewsState {
   fetchReviewsData?: ReviewsData | string[];
   newReviewData?: NewReviewData | string[];
   updatedReviewData?: UpdatedReviewData | string[];
-  loading: boolean;
+  loadingMovieData: boolean;
+  loadingMutation: boolean;
 }
 
 const initialState: ReviewsState = {
@@ -87,7 +88,8 @@ const initialState: ReviewsState = {
   fetchReviewsData: undefined,
   newReviewData: undefined,
   updatedReviewData: undefined,
-  loading: false,
+  loadingMovieData: false,
+  loadingMutation: false,
 };
 
 export const slice = createSlice({
@@ -96,64 +98,71 @@ export const slice = createSlice({
   reducers: {
     fetchMovieById: (state, action: PayloadAction<string>) => {
       state.movieId = action.payload;
-      state.loading = true;
+      state.loadingMovieData = true;
     },
     fetchReviewsByMovie: (state, action: PayloadAction<string>) => {
       state.movieId = action.payload;
-      state.loading = true;
+      state.loadingMovieData = true;
     },
     clearReviewsData: (state) => {
       state.movieId = '';
       state.fetchReviewsData = undefined;
-      state.loading = false;
+      state.loadingMovieData = false;
     },
     clearMovieData: (state) => {
       state.movieId = '';
       state.fetchMovieData = undefined;
-      state.loading = false;
+      state.loadingMovieData = false;
     },
     loadedMovie: (state, action: PayloadAction<{ data: MovieData }>) => {
       state.fetchMovieData = action.payload.data;
-      state.loading = false;
+      state.loadingMovieData = false;
     },
     loadMovieError: (state) => {
       state.fetchMovieData = ['Error Fetching Movie :('];
-      state.loading = false;
+      state.loadingMovieData = false;
     },
     loadedReviews: (state, action: PayloadAction<{ data: ReviewsData }>) => {
       state.fetchReviewsData = action.payload.data;
-      state.loading = false;
+      state.loadingMovieData = false;
+      state.newReviewData = undefined;
+      state.updatedReviewData = undefined;
     },
     loadReviewsError: (state) => {
       state.fetchReviewsData = ['Error Fetching Reviews :('];
-      state.loading = false;
+      state.loadingMovieData = false;
     },
 
     createReview: (state, action: PayloadAction<CreateReviewDTO>) => {
-      state.loading = true;
+      state.loadingMutation = true;
     },
     createdReview: (state, action: PayloadAction<{ data: NewReviewData }>) => {
       state.newReviewData = action.payload.data;
-      state.loading = false;
+      state.loadingMutation = false;
     },
     createReviewError: (state) => {
       state.newReviewData = ['Error Creating Review :('];
-      state.loading = false;
+      state.loadingMutation = false;
     },
     clearCreateReview: (state) => {
       state.newReviewData = undefined;
-      state.loading = false;
+      state.loadingMutation = false;
     },
 
-    updateReview: (state, action: PayloadAction<UpdateReviewDTO>) => {},
+    updateReview: (state, action: PayloadAction<UpdateReviewDTO>) => {
+      state.loadingMutation = true;
+    },
     updatedReview: (state, action: PayloadAction<{ data: UpdatedReviewData }>) => {
       state.updatedReviewData = action.payload.data;
+      state.loadingMutation = false;
     },
     updateReviewError: (state) => {
       state.updatedReviewData = ['Error Updating Review :('];
+      state.loadingMutation = false;
     },
     clearUpdateReview: (state) => {
       state.updatedReviewData = undefined;
+      state.loadingMutation = false;
     },
   },
 });

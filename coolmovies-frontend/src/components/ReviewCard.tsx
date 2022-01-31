@@ -22,7 +22,6 @@ export function ReviewCard({
   onEdit,
 }: ReviewCardProps) {
   const dispatch = useAppDispatch();
-  const reviewsState = useAppSelector((state) => state.reviews);
 
   const [menuElement, setMenuElement] = useState<Element | null>(null);
   const open = Boolean(menuElement);

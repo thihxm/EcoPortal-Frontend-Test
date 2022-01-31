@@ -1,23 +1,40 @@
 import { css } from "@emotion/react";
 import { Box, Button, Dialog, DialogTitle, IconButton, Slider, TextField, Typography } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-import { FormEvent, useEffect } from "react";
-import { useAppDispatch, useAppSelector, reviewsActions } from "../redux";
+import { FormEvent, useEffect, useState } from "react";
 
-interface AddReviewDialogProps {
-  onClose: () => void
-  isOpen: boolean
-  userId: string
-  movieId: string
+interface ReviewDialogProps {
+  onClose: () => void;
+  isOpen: boolean;
+  initialData?: {
+    title: string;
+    rating: number;
+    body: string;
+  } | null;
+  onSubmit: (data: {
+    title: string;
+    rating: number;
+    body: string;
+  }) => void;
 }
 
-export function AddReviewDialog({ 
+export function ReviewDialog({ 
   onClose,
   isOpen,
-  userId,
-  movieId
-}: AddReviewDialogProps) {
-  const dispatch = useAppDispatch();
+  initialData,
+  onSubmit,
+}: ReviewDialogProps) {
+  const [title, setTitle] = useState('');
+  const [rating, setRating] = useState(1);
+  const [body, setBody] = useState('');
+
+  useEffect(() => {
+    if (initialData) {
+      setTitle(initialData.title);
+      setRating(initialData.rating);
+      setBody(initialData.body);
+    }
+  }, [initialData])
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -31,17 +48,19 @@ export function AddReviewDialog({
       title: target.title.value,
       rating: target.rating.value,
       body: target.body.value,
-      movieId,
-      userReviewerId: userId,
-    }
+    };
 
-    dispatch(reviewsActions.createReview(data))
-    onClose()
+    onSubmit(data);
+    handleClose();
   }
 
-  useEffect(() => {
-    dispatch(reviewsActions.clearCreateReview())
-  }, [dispatch])
+  const handleClose = () => {
+    setTitle('');
+    setRating(1);
+    setBody('');
+
+    onClose();
+  }
 
   return (
     <Dialog maxWidth="md" fullWidth onClose={onClose} open={isOpen}>
@@ -49,7 +68,7 @@ export function AddReviewDialog({
         Create review
         <IconButton
           aria-label="close"
-          onClick={onClose}
+          onClick={handleClose}
           sx={{
             position: 'absolute',
             right: 8,
@@ -62,13 +81,21 @@ export function AddReviewDialog({
       </DialogTitle>
       
       <Box component="form" onSubmit={handleSubmit} css={styles.dialogContent}>
-        <TextField required fullWidth label="Title" variant="outlined" name="title" />
+        <TextField
+          required
+          fullWidth
+          label="Title"
+          variant="outlined"
+          name="title"
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+        />
 
         <Box>
           <Typography color="text.secondary">Rating</Typography>
           
           <Slider
-            defaultValue={1}
+            defaultValue={initialData ? initialData.rating : 1}
             step={1}
             aria-label="rating slider"
             valueLabelDisplay="auto"
@@ -76,13 +103,24 @@ export function AddReviewDialog({
             min={1}
             max={5}
             name="rating"
+            onChange={(event, value) => setRating(value as number)}
           />
         </Box>
 
-        <TextField required fullWidth label="Body" multiline rows={8} variant="outlined" name="body" />
+        <TextField
+          required
+          fullWidth
+          label="Body"
+          multiline
+          rows={8}
+          variant="outlined"
+          name="body"
+          value={body}
+          onChange={(event) => setBody(event.target.value)}
+        />
 
         <Button type="submit" variant="contained" css={styles.submitButton}>
-          Create
+          {initialData ? 'Update' : 'Create'}
         </Button>
       </Box>
     </Dialog>

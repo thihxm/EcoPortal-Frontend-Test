@@ -6,9 +6,9 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 import { Header } from "../../components/Header";
-import { Review } from "../../components/Review";
+import { ReviewCard } from "../../components/ReviewCard";
 import { reviewsActions, useAppDispatch, useAppSelector, userActions } from "../../redux";
-import { AddReviewDialog } from "../../components/AddReviewDialog";
+import { ReviewDialog } from "../../components/ReviewDialog";
 
 type ReviewResponse = {
   id: string;
@@ -16,9 +16,19 @@ type ReviewResponse = {
   rating: number;
   body: string;
   userByUserReviewerId: {
-      name: string,
+    name: string,
   };
 }
+
+type ReviewData = {
+  title: string;
+  rating: number;
+  body: string;
+};
+
+type HandleSubmitHandler = (data: ReviewData) => void;
+
+type HandleEditHandler = (reviewId: string, data: ReviewData) => void;
 
 export const Movie: NextPage = () => {
   const router = useRouter();
@@ -27,16 +37,45 @@ export const Movie: NextPage = () => {
   const reviewsState = useAppSelector((state) => state.reviews);
   const userState = useAppSelector((state) => state.user);
 
-  const [addReviewDialog, setAddReviewDialog] = useState(false);
-  const [userId, setUserId] = useState("");
-  const [movieId, setMovieId] = useState("");
+  const [openReviewDialog, setOpenReviewDialog] = useState(false);
+  const [userId, setUserId] = useState('');
+  const [movieId, setMovieId] = useState('');
+  const [selectedReview, setSelectedReview] = useState<string | null>(null);
+  const [selectedReviewData, setSelectedReviewData] = useState<ReviewData | null>(null);
 
   const handleCloseAddReviewDialog = () => {
-    setAddReviewDialog(false)
-  }
+    setOpenReviewDialog(false);
+  };
 
   const handleOpenAddReviewDialog = () => {
-    setAddReviewDialog(true)
+    setSelectedReview(null);
+    setSelectedReviewData(null);
+    setOpenReviewDialog(true);
+  };
+
+  const handleEditReview: HandleEditHandler = (reviewId, data) => {
+    setSelectedReview(reviewId);
+    setSelectedReviewData(data);
+    setOpenReviewDialog(true);
+  };
+  
+  const handleSubmit: HandleSubmitHandler = ({ title, rating, body }) => {
+    if (selectedReview) {
+      dispatch(reviewsActions.updateReview({
+        title,
+        rating,
+        body,
+        reviewId: selectedReview,
+      }));
+    } else {
+      dispatch(reviewsActions.createReview({
+        title,
+        rating,
+        body,
+        userReviewerId: userId,
+        movieId,
+      }));
+    }
   }
   
   useEffect(() => {
@@ -88,23 +127,30 @@ export const Movie: NextPage = () => {
             )
             : !Array.isArray(reviewsState.fetchReviewsData)
                 && reviewsState.fetchReviewsData?.allMovieReviews.nodes.map((review: ReviewResponse) => (
-                <Review
+                <ReviewCard
                   key={review.id}
                   id={review.id}
                   title={review.title}
                   author={review.userByUserReviewerId.name}
                   rating={review.rating}
                   body={review.body}
+                  onEdit={(reviewId) => {
+                    handleEditReview(reviewId, {
+                      title: review.title,
+                      rating: review.rating,
+                      body: review.body,
+                    })
+                  }}
                 />
               ))}
           
         </Box>
 
-        <AddReviewDialog
+        <ReviewDialog
           onClose={handleCloseAddReviewDialog}
-          isOpen={addReviewDialog}
-          userId={userId}
-          movieId={movieId}
+          isOpen={openReviewDialog}
+          onSubmit={(data) => handleSubmit(data)}
+          initialData={selectedReviewData}
         />
 
         <Fab onClick={handleOpenAddReviewDialog} color="primary" aria-label="add review" css={styles.addReview}>

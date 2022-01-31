@@ -4,15 +4,23 @@ import { MoreVert as MoreVertIcon, Edit as EditIcon } from "@mui/icons-material"
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux";
 
-interface ReviewProps {
+interface ReviewCardProps {
   id: string;
   title: string;
   author: string;
   rating: number;
   body: string;
+  onEdit?: (reviewId: string) => void;
 }
 
-export function Review({ id, title, author, rating, body }: ReviewProps) {
+export function ReviewCard({
+  id,
+  title,
+  author,
+  rating,
+  body,
+  onEdit,
+}: ReviewCardProps) {
   const dispatch = useAppDispatch();
   const reviewsState = useAppSelector((state) => state.reviews);
 
@@ -28,7 +36,9 @@ export function Review({ id, title, author, rating, body }: ReviewProps) {
   }
 
   const handleEditReview = () => {
-    console.log(id);
+    if (onEdit) {
+      onEdit(id);
+    }
   }
 
   return (
